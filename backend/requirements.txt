@@ -1,0 +1,16 @@
+django>=5.0
+djangorestframework>=3.15
+django-cors-headers
+psycopg2-binary
+python-dotenv
+celery[redis]
+openpyxl
+pdfplumber
+python-dateutil
+pint
+whitenoise
+gunicorn
+pandas
+numpy
+djangorestframework-simplejwt
+drf-spectacular
