@@ -23,6 +23,11 @@ if db_url:
         'PASSWORD': url.password,
         'HOST': url.hostname,
         'PORT': url.port,
+        'CONN_MAX_AGE': 0,
+        'OPTIONS': {
+            'connect_timeout': 10,
+            'options': '-c statement_timeout=30000',
+        },
     }
 
 CELERY_TASK_ALWAYS_EAGER = os.getenv('CELERY_TASK_ALWAYS_EAGER', 'True').lower() in ('true', '1', 'yes')

@@ -27,7 +27,17 @@ const Login = () => {
       navigate('/');
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.detail || 'Invalid username or password. Please try again.');
+      if (err.response?.status === 503) {
+        setError(err.response?.data?.detail || 'Database is temporarily unavailable or sleeping. If using Supabase Free Tier, please ensure your project is active.');
+      } else if (err.response?.status === 500) {
+        setError('Server error occurred while connecting to database. Please verify your database is running.');
+      } else if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else if (!err.response) {
+        setError('Cannot connect to backend server. Please verify your network and server deployment.');
+      } else {
+        setError('Invalid username or password. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

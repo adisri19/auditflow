@@ -1,0 +1,26 @@
+name: Supabase & Render Keep-Alive
+
+on:
+  schedule:
+    # Run every 6 hours (0:00, 6:00, 12:00, 18:00 UTC)
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  ping:
+    name: Ping Database & Health Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Health Endpoint (Keeps Supabase DB Active)
+        run: |
+          echo "Pinging AuditFlow backend health check endpoint..."
+          RESPONSE=$(curl -s -w "\nHTTP_STATUS:%{http_code}" https://auditflow-backend-fmds.onrender.com/api/health/)
+          echo "$RESPONSE"
+          STATUS=$(echo "$RESPONSE" | grep "HTTP_STATUS:" | cut -d':' -f2)
+          if [ "$STATUS" -eq 200 ]; then
+            echo "Health check succeeded (HTTP 200). Database is active."
+          elif [ "$STATUS" -eq 503 ]; then
+            echo "Health check returned HTTP 503. Database may be sleeping/paused or warming up."
+          else
+            echo "Health check returned status $STATUS."
+          fi

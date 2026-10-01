@@ -34,10 +34,11 @@ else:
         'options': '-c statement_timeout=30000',
     }
 
-# Register DatabaseHealthMiddleware before CommonMiddleware
-MIDDLEWARE = list(MIDDLEWARE)
-common_middleware_index = MIDDLEWARE.index('django.middleware.common.CommonMiddleware')
-MIDDLEWARE.insert(common_middleware_index, 'breathe.middleware.DatabaseHealthMiddleware')
+# Ensure DatabaseHealthMiddleware is registered before CommonMiddleware
+if 'breathe.middleware.DatabaseHealthMiddleware' not in MIDDLEWARE:
+    MIDDLEWARE = list(MIDDLEWARE)
+    common_middleware_index = MIDDLEWARE.index('django.middleware.common.CommonMiddleware')
+    MIDDLEWARE.insert(common_middleware_index, 'breathe.middleware.DatabaseHealthMiddleware')
 
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 if not CORS_ALLOWED_ORIGINS or CORS_ALLOWED_ORIGINS == ['']:

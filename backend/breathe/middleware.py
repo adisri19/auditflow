@@ -1,5 +1,5 @@
 import logging
-from django.db import OperationalError
+from django.db import OperationalError, DatabaseError
 from django.http import JsonResponse
 
 logger = logging.getLogger(__name__)
@@ -12,12 +12,13 @@ class DatabaseHealthMiddleware:
         try:
             response = self.get_response(request)
             return response
-        except OperationalError as exc:
+        except (OperationalError, DatabaseError) as exc:
             logger.error(f"Database operational error encountered: {exc}", exc_info=True)
             return JsonResponse({'detail': 'Database temporarily unavailable please retry'}, status=503)
 
     def process_exception(self, request, exception):
-        if isinstance(exception, OperationalError):
+        if isinstance(exception, (OperationalError, DatabaseError)):
             logger.error(f"Database operational error in process_exception: {exception}", exc_info=True)
             return JsonResponse({'detail': 'Database temporarily unavailable please retry'}, status=503)
         return None
+

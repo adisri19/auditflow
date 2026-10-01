@@ -112,6 +112,15 @@ docker compose up --build
 
 ---
 
+## Health Check & Keepalive
+
+AuditFlow exposes unauthenticated database ping endpoints at `/health/` and `/api/health/` (and `/api/v1/health/`).
+- Performs an active database query (`SELECT 1`) to confirm database connectivity.
+- Used by `.github/workflows/keepalive.yml` or external cron monitors (e.g. cron-job.org) to prevent Supabase Free Tier auto-pause after 7 days of inactivity.
+
+
+---
+
 ## Data model
 
 See [MODEL.md](./MODEL.md) for full schema documentation covering multi-tenancy, Scope 1/2/3 categorisation, source-of-truth provenance tracking, unit normalisation, and audit trail immutability.

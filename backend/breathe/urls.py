@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from apps.tenants.views import LoginView, LogoutView, MeView, TenantListView
+from apps.tenants.views import LoginView, LogoutView, MeView, TenantListView, HealthCheckView
 from apps.ingestion.views import BatchListCreateView, BatchDetailView, BatchRawRowsView
 from apps.emissions.views import (
     RecordListCreateView, RecordBulkApproveView, RecordDetailView,
@@ -12,6 +12,9 @@ from apps.emissions.views import (
 )
 
 api_urls = [
+    # Health
+    path('health/', HealthCheckView.as_view(), name='api-health'),
+
     # Auth
     path('auth/login/', LoginView.as_view(), name='auth-login'),
     path('auth/logout/', LogoutView.as_view(), name='auth-logout'),
@@ -42,6 +45,8 @@ api_urls = [
 ]
 
 urlpatterns = [
+    path('health/', HealthCheckView.as_view(), name='health-check'),
+    path('api/health/', HealthCheckView.as_view(), name='api-health-check'),
     path('admin/', admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
